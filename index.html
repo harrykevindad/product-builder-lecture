@@ -255,6 +255,34 @@
       transform: translateY(-1px);
     }
 
+    .submit-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    #form-status {
+      margin-top: 15px;
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 10px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    #form-status.success {
+      display: block;
+      background: rgba(76, 209, 55, 0.1);
+      color: #27ae60;
+      border: 1px solid rgba(76, 209, 55, 0.3);
+    }
+
+    #form-status.error {
+      display: block;
+      background: rgba(232, 65, 24, 0.1);
+      color: #c0392b;
+      border: 1px solid rgba(232, 65, 24, 0.3);
+    }
+
     footer {
       margin-top: 30px;
       font-size: 0.8rem;
@@ -288,7 +316,7 @@
 
     <div class="contact-section">
       <h2>🤝 제휴 문의</h2>
-      <form action="https://formspree.io/f/myegzbyg" method="POST">
+      <form id="contact-form" action="https://formspree.io/f/myegzbyg" method="POST">
         <div class="form-group">
           <label>이메일 주소</label>
           <input type="email" name="email" placeholder="example@email.com" required>
@@ -297,7 +325,8 @@
           <label>문의 내용</label>
           <textarea name="message" rows="4" placeholder="제휴 관련 문의 내용을 입력해주세요." required></textarea>
         </div>
-        <button type="submit" class="submit-btn">문의 보내기</button>
+        <button type="submit" id="submit-btn" class="submit-btn">문의 보내기</button>
+        <div id="form-status"></div>
       </form>
     </div>
 
@@ -327,6 +356,53 @@
       checkbox.checked = (newTheme === 'dark');
       themeText.innerText = newTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
     }
+
+    // Form Submission Handling
+    const form = document.getElementById("contact-form");
+    const status = document.getElementById("form-status");
+    const submitBtn = document.getElementById("submit-btn");
+
+    async function handleSubmit(event) {
+      event.preventDefault();
+      status.style.display = "none";
+      status.className = "";
+      submitBtn.disabled = true;
+      submitBtn.innerText = "보내는 중...";
+
+      const data = new FormData(event.target);
+      
+      try {
+        const response = await fetch(event.target.action, {
+          method: form.method,
+          body: data,
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          status.innerText = "🚀 문의가 성공적으로 전송되었습니다!";
+          status.className = "success";
+          form.reset();
+        } else {
+          const result = await response.json();
+          if (Object.hasOwn(result, 'errors')) {
+            status.innerText = result.errors.map(error => error.message).join(", ");
+          } else {
+            status.innerText = "Oops! 전송 중 오류가 발생했습니다.";
+          }
+          status.className = "error";
+        }
+      } catch (error) {
+        status.innerText = "Oops! 전송 중 네트워크 오류가 발생했습니다.";
+        status.className = "error";
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = "문의 보내기";
+        status.style.display = "block";
+      }
+    }
+    form.addEventListener("submit", handleSubmit);
 
     // Supabase Config
     const SUPABASE_URL = "https://etntttfulsfbkuhklmuz.supabase.co";
