@@ -18,6 +18,7 @@
       --border-color: rgba(0, 0, 0, 0.05);
       --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
       --golf-green: #27ae60;
+      --prize-gold: #f1c40f;
     }
     
     [data-theme="dark"] {
@@ -47,7 +48,7 @@
 
     .container {
       width: 100%;
-      max-width: 800px;
+      max-width: 850px;
       display: flex;
       flex-direction: column;
       gap: 40px;
@@ -161,41 +162,68 @@
       text-align: left;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
       .results-grid { grid-template-columns: 1fr; }
     }
 
     .league-card {
       background: rgba(0,0,0,0.03);
-      padding: 20px;
-      border-radius: 16px;
+      padding: 24px;
+      border-radius: 20px;
       border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
     }
 
     [data-theme="dark"] .league-card { background: rgba(255,255,255,0.03); }
 
-    .league-title {
+    .tournament-name {
+      font-size: 1.1rem;
       font-weight: 700;
+      color: var(--accent-color);
       margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .league-header {
+      font-weight: 700;
+      margin-bottom: 10px;
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
+      color: var(--golf-green);
     }
 
     .rank-item {
       display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
+      flex-direction: column;
+      padding: 12px 0;
       border-bottom: 1px solid var(--border-color);
-      font-size: 0.95rem;
+      transition: background 0.2s;
     }
 
     .rank-item:last-child { border-bottom: none; }
 
-    .rank-num { font-weight: 700; color: var(--accent-color); width: 25px; }
-    .player-name { flex: 1; }
-    .score { font-weight: 700; }
+    .player-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .prize-row {
+      display: flex;
+      justify-content: flex-end;
+      font-size: 0.85rem;
+      color: var(--prize-gold);
+      font-weight: 700;
+    }
+
+    .rank-num { font-weight: 700; color: var(--text-secondary); width: 25px; margin-right: 10px; }
+    .player-name { flex: 1; font-weight: 700; }
+    .score { font-weight: 700; color: var(--golf-green); }
 
     /* 로또 섹션 스타일 */
     .btn {
@@ -293,7 +321,7 @@
     <!-- 골프 리그 섹션 (메인) -->
     <section class="section-card">
       <h1>⛳ Golf League Dashboard</h1>
-      <p class="sub-text">2026년 시즌 PGA & LPGA 경기 결과</p>
+      <p class="sub-text">2026년 시즌 PGA & LPGA 경기 결과 및 상금</p>
       
       <div class="selector-group">
         <select id="month-select" onchange="updateGolfResults()">
@@ -310,13 +338,15 @@
 
       <div class="results-grid">
         <div class="league-card">
-          <div class="league-title">🏆 PGA Tour</div>
+          <div class="league-header">🏆 PGA Tour</div>
+          <div id="pga-tournament" class="tournament-name">로딩 중...</div>
           <div id="pga-results">
             <!-- PGA Results will be here -->
           </div>
         </div>
         <div class="league-card">
-          <div class="league-title">👩‍🚀 LPGA Tour</div>
+          <div class="league-header">👩‍🚀 LPGA Tour</div>
+          <div id="lpga-tournament" class="tournament-name">로딩 중...</div>
           <div id="lpga-results">
             <!-- LPGA Results will be here -->
           </div>
@@ -388,37 +418,222 @@
       themeText.innerText = newTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
     }
 
-    // Golf Results Mock Data & Logic
-    const golfData = {
-      pga: [
-        ["Scottie Scheffler", "-18"], ["Xander Schauffele", "-15"], ["Rory McIlroy", "-14"], ["Ludvig Åberg", "-12"], ["Viktor Hovland", "-11"]
-      ],
-      lpga: [
-        ["Nelly Korda", "-14"], ["Lydia Ko", "-13"], ["Jin Young Ko", "-11"], ["Rose Zhang", "-10"], ["Atthaya Thitikul", "-9"]
-      ]
+    // Golf Results Database (Mock)
+    const golfDatabase = {
+      "7": {
+        "1": {
+          pga: {
+            name: "John Deere Classic",
+            results: [
+              { name: "Davis Thompson", score: "-28", prize: "$1,440,000" },
+              { name: "Michael Thorbjornsen", score: "-24", prize: "$872,000" },
+              { name: "C.T. Pan", score: "-23", prize: "$472,000" },
+              { name: "Luke Clanton", score: "-23", prize: "$334,000" },
+              { name: "Ben Griffin", score: "-22", prize: "$226,000" }
+            ]
+          },
+          lpga: {
+            name: "Dana Open",
+            results: [
+              { name: "Chanettee Wannasaen", score: "-20", prize: "$262,500" },
+              { name: "Haeran Ryu", score: "-19", prize: "$165,123" },
+              { name: "Ssu-Chia Cheng", score: "-14", prize: "$107,322" },
+              { name: "Linn Grant", score: "-14", prize: "$83,024" },
+              { name: "Mary Liu", score: "-13", prize: "$66,847" }
+            ]
+          }
+        },
+        "2": {
+          pga: {
+            name: "Genesis Scottish Open",
+            results: [
+              { name: "Robert MacIntyre", score: "-18", prize: "$1,620,000" },
+              { name: "Adam Scott", score: "-17", prize: "$981,000" },
+              { name: "Sungjae Im", score: "-14", prize: "$531,000" },
+              { name: "Rory McIlroy", score: "-14", prize: "$375,750" },
+              { name: "Collin Morikawa", score: "-13", prize: "$254,250" }
+            ]
+          },
+          lpga: {
+            name: "The Amundi Evian Championship",
+            results: [
+              { name: "Ayaka Furue", score: "-19", prize: "$1,200,000" },
+              { name: "Stephanie Kyriacou", score: "-18", prize: "$731,643" },
+              { name: "Patty Tavatanakit", score: "-17", prize: "$530,681" },
+              { name: "Lauren Coughlin", score: "-15", prize: "$410,488" },
+              { name: "Hye-Jin Choi", score: "-10", prize: "$330,352" }
+            ]
+          }
+        },
+        "3": {
+          pga: {
+            name: "The 154th Open Championship",
+            results: [
+              { name: "Xander Schauffele", score: "-9", prize: "$3,100,000" },
+              { name: "Justin Rose", score: "-7", prize: "$1,759,000" },
+              { name: "Billy Horschel", score: "-7", prize: "$1,128,000" },
+              { name: "Thriston Lawrence", score: "-6", prize: "$871,000" },
+              { name: "Russell Henley", score: "-5", prize: "$687,000" }
+            ]
+          },
+          lpga: {
+            name: "FM Global Championship",
+            results: [
+              { name: "Lauren Coughlin", score: "-15", prize: "$570,000" },
+              { name: "Haeran Ryu", score: "-15", prize: "$358,746" },
+              { name: "Jeeno Thitikul", score: "-13", prize: "$260,238" },
+              { name: "Nelly Korda", score: "-12", prize: "$201,311" },
+              { name: "Ally Ewing", score: "-11", prize: "$162,025" }
+            ]
+          }
+        },
+        "4": {
+          pga: {
+            name: "3M Open",
+            results: [
+              { name: "Jhonattan Vegas", score: "-17", prize: "$1,458,000" },
+              { name: "Max Greyserman", score: "-16", prize: "$882,900" },
+              { name: "Maverick McNealy", score: "-15", prize: "$477,900" },
+              { name: "Matt Kuchar", score: "-15", prize: "$338,175" },
+              { name: "Taylor Pendrith", score: "-14", prize: "$228,825" }
+            ]
+          },
+          lpga: {
+            name: "ISPS Handa Women's Scottish Open",
+            results: [
+              { name: "Lauren Coughlin", score: "-15", prize: "$300,000" },
+              { name: "Esther Henseleit", score: "-11", prize: "$188,811" },
+              { name: "Ayaka Furue", score: "-9", prize: "$136,964" },
+              { name: "Megan Khang", score: "-8", prize: "$105,946" },
+              { name: "Charley Hull", score: "-7", prize: "$85,268" }
+            ]
+          }
+        }
+      },
+      "8": {
+        "1": {
+          pga: {
+            name: "Olympic Men's Golf",
+            results: [
+              { name: "Scottie Scheffler (Gold)", score: "-19", prize: "Olympic Gold" },
+              { name: "Tommy Fleetwood (Silver)", score: "-18", prize: "Olympic Silver" },
+              { name: "Hideki Matsuyama (Bronze)", score: "-17", prize: "Olympic Bronze" },
+              { name: "Victor Perez", score: "-16", prize: "-" },
+              { name: "Rory McIlroy", score: "-15", prize: "-" }
+            ]
+          },
+          lpga: {
+            name: "Olympic Women's Golf",
+            results: [
+              { name: "Lydia Ko (Gold)", score: "-10", prize: "Olympic Gold" },
+              { name: "Esther Henseleit (Silver)", score: "-8", prize: "Olympic Silver" },
+              { name: "Lin Xiyu (Bronze)", score: "-7", prize: "Olympic Bronze" },
+              { name: "Bianca Pagdanganan", score: "-6", prize: "-" },
+              { name: "Hannah Green", score: "-6", prize: "-" }
+            ]
+          }
+        },
+        "2": {
+          pga: {
+            name: "Wyndham Championship",
+            results: [
+              { name: "Aaron Rai", score: "-18", prize: "$1,422,000" },
+              { name: "Max Greyserman", score: "-16", prize: "$861,100" },
+              { name: "J.J. Spaun", score: "-15", prize: "$466,100" },
+              { name: "Ryo Hisatsune", score: "-15", prize: "$329,825" },
+              { name: "Luke Clanton", score: "-14", prize: "$223,175" }
+            ]
+          },
+          lpga: {
+            name: "Kroger Queen City Championship",
+            results: [
+              { name: "Lydia Ko", score: "-23", prize: "$300,000" },
+              { name: "Jeeno Thitikul", score: "-18", prize: "$188,811" },
+              { name: "Haeran Ryu", score: "-17", prize: "$136,964" },
+              { name: "Albane Valenzuela", score: "-16", prize: "$105,946" },
+              { name: "Angel Yin", score: "-14", prize: "$85,268" }
+            ]
+          }
+        },
+        "3": {
+          pga: {
+            name: "FedEx St. Jude Championship",
+            results: [
+              { name: "Hideki Matsuyama", score: "-17", prize: "$3,600,000" },
+              { name: "Xander Schauffele", score: "-15", prize: "$1,760,000" },
+              { name: "Viktor Hovland", score: "-15", prize: "$1,130,000" },
+              { name: "Scottie Scheffler", score: "-14", prize: "$872,000" },
+              { name: "Sam Burns", score: "-13", prize: "$688,000" }
+            ]
+          },
+          lpga: {
+            name: "AIG Women's Open",
+            results: [
+              { name: "Lydia Ko", score: "-7", prize: "$1,425,000" },
+              { name: "Nelly Korda", score: "-5", prize: "$668,345" },
+              { name: "Jiyai Shin", score: "-5", prize: "$484,723" },
+              { name: "Ruoning Yin", score: "-5", prize: "$374,924" },
+              { name: "Lilia Vu", score: "-5", prize: "$302,156" }
+            ]
+          }
+        },
+        "4": {
+          pga: {
+            name: "BMW Championship",
+            results: [
+              { name: "Keegan Bradley", score: "-12", prize: "$3,600,000" },
+              { name: "Sam Burns", score: "-11", prize: "$1,760,000" },
+              { name: "Ludvig Åberg", score: "-11", prize: "$1,130,000" },
+              { name: "Adam Scott", score: "-11", prize: "$872,000" },
+              { name: "Scottie Scheffler", score: "-8", prize: "$688,000" }
+            ]
+          },
+          lpga: {
+            name: "Walmart NW Arkansas Championship",
+            results: [
+              { name: "Jasmine Suwannapura", score: "-17", prize: "$450,000" },
+              { name: "Lucy Li", score: "-17", prize: "$278,341" },
+              { name: "Mao Saigo", score: "-16", prize: "$201,894" },
+              { name: "Sei Young Kim", score: "-15", prize: "$156,231" },
+              { name: "Arpichaya Yubol", score: "-14", prize: "$125,746" }
+            ]
+          }
+        }
+      }
     };
 
     function updateGolfResults() {
-      const pgaContainer = document.getElementById('pga-results');
-      const lpgaContainer = document.getElementById('lpga-results');
-      
-      // Shuffle or vary scores slightly based on week/month to feel dynamic
       const month = document.getElementById('month-select').value;
       const week = document.getElementById('week-select').value;
-      
-      pgaContainer.innerHTML = golfData.pga.map((item, idx) => `
+      const data = golfDatabase[month][week];
+
+      const pgaTournament = document.getElementById('pga-tournament');
+      const lpgaTournament = document.getElementById('lpga-tournament');
+      const pgaResults = document.getElementById('pga-results');
+      const lpgaResults = document.getElementById('lpga-results');
+
+      pgaTournament.innerText = data.pga.name;
+      lpgaTournament.innerText = data.lpga.name;
+
+      pgaResults.innerHTML = data.pga.results.map((r, i) => `
         <div class="rank-item">
-          <span class="rank-num">${idx + 1}</span>
-          <span class="player-name">${item[0]}</span>
-          <span class="score">${parseInt(item[1]) - (week % 2)}</span>
+          <div class="player-row">
+            <span class="rank-num">${i + 1}</span>
+            <span class="player-name">${r.name}</span>
+            <span class="score">${r.score}</span>
+          </div>
+          <div class="prize-row">Prize: ${r.prize}</div>
         </div>
       `).join('');
 
-      lpgaContainer.innerHTML = golfData.lpga.map((item, idx) => `
+      lpgaResults.innerHTML = data.lpga.results.map((r, i) => `
         <div class="rank-item">
-          <span class="rank-num">${idx + 1}</span>
-          <span class="player-name">${item[0]}</span>
-          <span class="score">${parseInt(item[1]) - (month % 2)}</span>
+          <div class="player-row">
+            <span class="rank-num">${i + 1}</span>
+            <span class="player-name">${r.name}</span>
+            <span class="score">${r.score}</span>
+          </div>
+          <div class="prize-row">Prize: ${r.prize}</div>
         </div>
       `).join('');
     }
