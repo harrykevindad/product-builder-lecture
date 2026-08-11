@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>프리미엄 로또 번호 생성기</title>
+  <title>프리미엄 골프 & 럭키 서비스</title>
   <!-- Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- Google Fonts -->
@@ -17,6 +17,7 @@
       --accent-color: #0984e3;
       --border-color: rgba(0, 0, 0, 0.05);
       --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      --golf-green: #27ae60;
     }
     
     [data-theme="dark"] {
@@ -27,6 +28,7 @@
       --accent-color: #74b9ff;
       --border-color: rgba(255, 255, 255, 0.1);
       --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      --golf-green: #2ecc71;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -34,19 +36,24 @@
     body {
       font-family: 'Noto+Sans+KR', sans-serif;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
       background: var(--bg-gradient);
       color: var(--text-primary);
       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-      padding: 20px;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .container {
       width: 100%;
-      max-width: 500px;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .section-card {
       background: var(--card-bg);
       backdrop-filter: blur(10px);
       padding: 40px;
@@ -54,16 +61,24 @@
       box-shadow: var(--shadow);
       border: 1px solid var(--border-color);
       text-align: center;
+      animation: fadeIn 0.8s ease-out;
     }
 
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 10px;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1, h2 {
       font-weight: 700;
       letter-spacing: -1px;
+      margin-bottom: 10px;
     }
 
-    p {
+    h1 { font-size: 2.2rem; }
+    h2 { font-size: 1.8rem; color: var(--golf-green); }
+
+    .sub-text {
       font-size: 1rem;
       color: var(--text-secondary);
       margin-bottom: 30px;
@@ -71,19 +86,24 @@
 
     /* 테마 토글 스위치 */
     .theme-switch-wrapper {
-      position: absolute;
-      top: 30px;
-      right: 30px;
+      position: fixed;
+      top: 20px;
+      right: 20px;
       display: flex;
       align-items: center;
       gap: 10px;
+      z-index: 100;
+      background: var(--card-bg);
+      padding: 8px 15px;
+      border-radius: 20px;
+      box-shadow: var(--shadow);
     }
 
     .theme-switch {
       display: inline-block;
-      height: 28px;
+      height: 24px;
       position: relative;
-      width: 50px;
+      width: 44px;
     }
 
     .theme-switch input { display: none; }
@@ -102,19 +122,82 @@
 
     .slider:before {
       background-color: white;
-      bottom: 4px;
+      bottom: 3px;
       content: "";
-      height: 20px;
-      left: 4px;
+      height: 18px;
+      left: 3px;
       position: absolute;
       transition: .4s;
-      width: 20px;
+      width: 18px;
       border-radius: 50%;
     }
 
     input:checked + .slider { background-color: var(--accent-color); }
-    input:checked + .slider:before { transform: translateX(22px); }
+    input:checked + .slider:before { transform: translateX(20px); }
 
+    /* 골프 섹션 스타일 */
+    .selector-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    select {
+      padding: 10px 20px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      text-align: left;
+    }
+
+    @media (max-width: 600px) {
+      .results-grid { grid-template-columns: 1fr; }
+    }
+
+    .league-card {
+      background: rgba(0,0,0,0.03);
+      padding: 20px;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+    }
+
+    [data-theme="dark"] .league-card { background: rgba(255,255,255,0.03); }
+
+    .league-title {
+      font-weight: 700;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.1rem;
+    }
+
+    .rank-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.95rem;
+    }
+
+    .rank-item:last-child { border-bottom: none; }
+
+    .rank-num { font-weight: 700; color: var(--accent-color); width: 25px; }
+    .player-name { flex: 1; }
+    .score { font-weight: 700; }
+
+    /* 로또 섹션 스타일 */
     .btn {
       padding: 16px 32px;
       font-size: 1.1rem;
@@ -127,6 +210,7 @@
       transition: all 0.3s ease;
       box-shadow: 0 4px 15px rgba(9, 132, 227, 0.3);
       width: 100%;
+      max-width: 300px;
     }
 
     .btn:hover {
@@ -135,17 +219,10 @@
       filter: brightness(1.1);
     }
 
-    .btn:active { transform: translateY(0); }
-
     .result-area {
       margin-top: 30px;
       display: none;
       animation: fadeIn 0.5s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     .game-row {
@@ -156,147 +233,46 @@
       border-bottom: 1px solid var(--border-color);
     }
 
-    .game-row:last-child { border-bottom: none; }
-
-    .game-label {
-      font-weight: 700;
-      color: var(--accent-color);
-      font-size: 1.2rem;
-      width: 30px;
-    }
-
+    .game-label { font-weight: 700; color: var(--accent-color); font-size: 1.2rem; width: 30px; }
     .balls { display: flex; gap: 8px; }
-
     .ball {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 700;
-      font-size: 0.9rem;
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: 700; font-size: 0.9rem;
       box-shadow: 0 4px 8px rgba(0,0,0,0.15);
       animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
     }
+    @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
 
-    @keyframes pop {
-      0% { transform: scale(0); }
-      100% { transform: scale(1); }
-    }
+    .ball.n1 { background: linear-gradient(135deg, #fbc531, #f39c12); }
+    .ball.n2 { background: linear-gradient(135deg, #00a8ff, #2980b9); }
+    .ball.n3 { background: linear-gradient(135deg, #e84118, #c0392b); }
+    .ball.n4 { background: linear-gradient(135deg, #7f8fa6, #2f3640); }
+    .ball.n5 { background: linear-gradient(135deg, #4cd137, #27ae60); }
 
-    .ball.n1 { background: linear-gradient(135deg, #fbc531, #f39c12); } /* 1-10 */
-    .ball.n2 { background: linear-gradient(135deg, #00a8ff, #2980b9); } /* 11-20 */
-    .ball.n3 { background: linear-gradient(135deg, #e84118, #c0392b); } /* 21-30 */
-    .ball.n4 { background: linear-gradient(135deg, #7f8fa6, #2f3640); } /* 31-40 */
-    .ball.n5 { background: linear-gradient(135deg, #4cd137, #27ae60); } /* 41-45 */
-
-    /* 제휴 문의 폼 스타일 */
-    .contact-section {
-      margin-top: 50px;
-      padding-top: 30px;
-      border-top: 1px solid var(--border-color);
+    /* 제휴 문의 & 댓글 */
+    .contact-section, .comments-section {
       text-align: left;
+      margin-top: 20px;
     }
 
-    .contact-section h2 {
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-      text-align: center;
-      color: var(--text-primary);
-    }
-
-    .form-group {
-      margin-bottom: 15px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 0.9rem;
-      margin-bottom: 5px;
-      color: var(--text-secondary);
-      font-weight: 700;
-    }
-
-    .form-group input, 
-    .form-group textarea {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid var(--border-color);
-      background: var(--card-bg);
-      color: var(--text-primary);
-      font-family: inherit;
-      font-size: 0.95rem;
-      transition: border-color 0.3s;
-    }
-
-    .form-group input:focus, 
-    .form-group textarea:focus {
-      outline: none;
-      border-color: var(--accent-color);
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; font-size: 0.9rem; margin-bottom: 5px; color: var(--text-secondary); font-weight: 700; }
+    .form-group input, .form-group textarea {
+      width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border-color);
+      background: var(--card-bg); color: var(--text-primary); font-family: inherit;
     }
 
     .submit-btn {
-      width: 100%;
-      padding: 14px;
-      background: var(--accent-color);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.2s, filter 0.2s;
+      width: 100%; padding: 14px; background: var(--accent-color); color: white;
+      border: none; border-radius: 10px; font-weight: 700; cursor: pointer;
     }
 
-    .submit-btn:hover {
-      filter: brightness(1.1);
-      transform: translateY(-1px);
-    }
+    #form-status { margin-top: 15px; font-size: 0.9rem; text-align: center; padding: 10px; border-radius: 8px; display: none; }
+    .success { background: rgba(76, 209, 55, 0.1); color: #27ae60; border: 1px solid rgba(76, 209, 55, 0.3); }
+    .error { background: rgba(232, 65, 24, 0.1); color: #c0392b; border: 1px solid rgba(232, 65, 24, 0.3); }
 
-    .submit-btn:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-    }
-
-    #form-status {
-      margin-top: 15px;
-      font-size: 0.9rem;
-      text-align: center;
-      padding: 10px;
-      border-radius: 8px;
-      display: none;
-    }
-
-    #form-status.success {
-      display: block;
-      background: rgba(76, 209, 55, 0.1);
-      color: #27ae60;
-      border: 1px solid rgba(76, 209, 55, 0.3);
-    }
-
-    #form-status.error {
-      display: block;
-      background: rgba(232, 65, 24, 0.1);
-      color: #c0392b;
-      border: 1px solid rgba(232, 65, 24, 0.3);
-    }
-
-    /* Disqus 섹션 스타일 */
-    .comments-section {
-      margin-top: 50px;
-      padding-top: 30px;
-      border-top: 1px solid var(--border-color);
-      text-align: left;
-    }
-
-    footer {
-      margin-top: 30px;
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      opacity: 0.7;
-    }
+    footer { margin-top: 20px; font-size: 0.8rem; color: var(--text-secondary); opacity: 0.7; text-align: center; }
   </style>
   <script>
     const savedTheme = localStorage.getItem('theme') || 'light';
@@ -314,15 +290,53 @@
   </div>
 
   <div class="container">
-    <h1>🎰 Fortune Lotto</h1>
-    <p>오늘의 행운을 점쳐보세요.</p>
-    <button class="btn" onclick="generateLotto()">행운의 번호 뽑기</button>
+    <!-- 골프 리그 섹션 (메인) -->
+    <section class="section-card">
+      <h1>⛳ Golf League Dashboard</h1>
+      <p class="sub-text">2026년 시즌 PGA & LPGA 경기 결과</p>
+      
+      <div class="selector-group">
+        <select id="month-select" onchange="updateGolfResults()">
+          <option value="7">2026년 7월</option>
+          <option value="8">2026년 8월</option>
+        </select>
+        <select id="week-select" onchange="updateGolfResults()">
+          <option value="1">1주차</option>
+          <option value="2">2주차</option>
+          <option value="3">3주차</option>
+          <option value="4">4주차</option>
+        </select>
+      </div>
 
-    <div class="result-area" id="resultArea">
-      <!-- Games will be injected here -->
-    </div>
+      <div class="results-grid">
+        <div class="league-card">
+          <div class="league-title">🏆 PGA Tour</div>
+          <div id="pga-results">
+            <!-- PGA Results will be here -->
+          </div>
+        </div>
+        <div class="league-card">
+          <div class="league-title">👩‍🚀 LPGA Tour</div>
+          <div id="lpga-results">
+            <!-- LPGA Results will be here -->
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <div class="contact-section">
+    <!-- 로또 섹션 (하단) -->
+    <section class="section-card">
+      <h2>🎰 Fortune Lotto</h2>
+      <p class="sub-text">골프 관람 전 행운을 확인해보세요.</p>
+      <button class="btn" onclick="generateLotto()">행운의 번호 뽑기</button>
+
+      <div class="result-area" id="resultArea">
+        <!-- Lotto numbers will be here -->
+      </div>
+    </section>
+
+    <!-- 제휴 문의 -->
+    <section class="section-card contact-section">
       <h2>🤝 제휴 문의</h2>
       <form id="contact-form" action="https://formspree.io/f/myegzbyg" method="POST">
         <div class="form-group">
@@ -336,43 +350,31 @@
         <button type="submit" id="submit-btn" class="submit-btn">문의 보내기</button>
         <div id="form-status"></div>
       </form>
-    </div>
+    </section>
 
-    <!-- Disqus 댓글 섹션 -->
-    <div class="comments-section">
+    <!-- Disqus 댓글 -->
+    <section class="section-card comments-section">
       <div id="disqus_thread"></div>
       <script>
-          /**
-          *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-          *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
-          /*
-          var disqus_config = function () {
-          this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
-          this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-          };
-          */
-          (function() { // DON'T EDIT BELOW THIS LINE
+          (function() {
           var d = document, s = d.createElement('script');
           s.src = 'https://product-builder-bmk4gojg4r.disqus.com/embed.js';
           s.setAttribute('data-timestamp', +new Date());
           (d.head || d.body).appendChild(s);
           })();
       </script>
-      <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-    </div>
+    </section>
 
     <footer>
-      Powered by Supabase & Gemini CLI
+      Powered by Supabase & Gemini CLI | © 2026 Golf & Luck
     </footer>
   </div>
 
   <script>
-    // Initialize theme UI
-    const currentTheme = localStorage.getItem('theme') || 'light';
+    // Theme logic
     const checkbox = document.querySelector('#checkbox');
     const themeText = document.querySelector('#theme-text');
-    
-    if (currentTheme === 'dark') {
+    if (localStorage.getItem('theme') === 'dark') {
       checkbox.checked = true;
       themeText.innerText = '☀️ Light Mode';
     }
@@ -380,62 +382,51 @@
     function toggleTheme() {
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       const newTheme = isDark ? 'light' : 'dark';
-      
       document.documentElement.setAttribute('data-theme', newTheme);
       localStorage.setItem('theme', newTheme);
-      
       checkbox.checked = (newTheme === 'dark');
       themeText.innerText = newTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
     }
 
-    // Form Submission Handling
-    const form = document.getElementById("contact-form");
-    const status = document.getElementById("form-status");
-    const submitBtn = document.getElementById("submit-btn");
+    // Golf Results Mock Data & Logic
+    const golfData = {
+      pga: [
+        ["Scottie Scheffler", "-18"], ["Xander Schauffele", "-15"], ["Rory McIlroy", "-14"], ["Ludvig Åberg", "-12"], ["Viktor Hovland", "-11"]
+      ],
+      lpga: [
+        ["Nelly Korda", "-14"], ["Lydia Ko", "-13"], ["Jin Young Ko", "-11"], ["Rose Zhang", "-10"], ["Atthaya Thitikul", "-9"]
+      ]
+    };
 
-    async function handleSubmit(event) {
-      event.preventDefault();
-      status.style.display = "none";
-      status.className = "";
-      submitBtn.disabled = true;
-      submitBtn.innerText = "보내는 중...";
-
-      const data = new FormData(event.target);
+    function updateGolfResults() {
+      const pgaContainer = document.getElementById('pga-results');
+      const lpgaContainer = document.getElementById('lpga-results');
       
-      try {
-        const response = await fetch(event.target.action, {
-          method: form.method,
-          body: data,
-          headers: {
-            'Accept': 'application/json'
-          }
-        });
+      // Shuffle or vary scores slightly based on week/month to feel dynamic
+      const month = document.getElementById('month-select').value;
+      const week = document.getElementById('week-select').value;
+      
+      pgaContainer.innerHTML = golfData.pga.map((item, idx) => `
+        <div class="rank-item">
+          <span class="rank-num">${idx + 1}</span>
+          <span class="player-name">${item[0]}</span>
+          <span class="score">${parseInt(item[1]) - (week % 2)}</span>
+        </div>
+      `).join('');
 
-        if (response.ok) {
-          status.innerText = "🚀 문의가 성공적으로 전송되었습니다!";
-          status.className = "success";
-          form.reset();
-        } else {
-          const result = await response.json();
-          if (Object.hasOwn(result, 'errors')) {
-            status.innerText = result.errors.map(error => error.message).join(", ");
-          } else {
-            status.innerText = "Oops! 전송 중 오류가 발생했습니다.";
-          }
-          status.className = "error";
-        }
-      } catch (error) {
-        status.innerText = "Oops! 전송 중 네트워크 오류가 발생했습니다.";
-        status.className = "error";
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerText = "문의 보내기";
-        status.style.display = "block";
-      }
+      lpgaContainer.innerHTML = golfData.lpga.map((item, idx) => `
+        <div class="rank-item">
+          <span class="rank-num">${idx + 1}</span>
+          <span class="player-name">${item[0]}</span>
+          <span class="score">${parseInt(item[1]) - (month % 2)}</span>
+        </div>
+      `).join('');
     }
-    form.addEventListener("submit", handleSubmit);
 
-    // Supabase Config
+    // Initialize Golf Results
+    updateGolfResults();
+
+    // Lotto logic
     const SUPABASE_URL = "https://etntttfulsfbkuhklmuz.supabase.co";
     const SUPABASE_KEY = "sb_publishable_9xgZZaDKYUFBr1lMuuLhsg_FsNo2Dot";
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -453,7 +444,6 @@
       const resultArea = document.getElementById('resultArea');
       resultArea.style.display = 'block';
       resultArea.innerHTML = '';
-
       const allGames = [];
 
       for (let i = 0; i < labels.length; i++) {
@@ -468,39 +458,50 @@
 
         const row = document.createElement('div');
         row.className = 'game-row';
-        row.style.animationDelay = `${i * 0.1}s`;
-
-        const labelDiv = document.createElement('div');
-        labelDiv.className = 'game-label';
-        labelDiv.innerText = label;
-
-        const ballsDiv = document.createElement('div');
-        ballsDiv.className = 'balls';
-
-        numbers.forEach((num, index) => {
+        row.innerHTML = `<div class="game-label">${label}</div><div class="balls"></div>`;
+        const ballsDiv = row.querySelector('.balls');
+        numbers.forEach((num, idx) => {
           const ball = document.createElement('div');
           ball.className = `ball ${getBallClass(num)}`;
           ball.innerText = num;
-          ball.style.animationDelay = `${(i * 0.1) + (index * 0.05)}s`;
+          ball.style.animationDelay = `${(i * 0.1) + (idx * 0.05)}s`;
           ballsDiv.appendChild(ball);
         });
-
-        row.appendChild(labelDiv);
-        row.appendChild(ballsDiv);
         resultArea.appendChild(row);
       }
 
-      // Save to Supabase
       try {
-        const insertData = allGames.map(game => ({
-          label: game.label,
-          numbers: game.numbers
-        }));
-        await _supabase.from('lotto_history').insert(insertData);
-      } catch (err) {
-        console.error("Supabase Error:", err);
-      }
+        await _supabase.from('lotto_history').insert(allGames.map(g => ({ label: g.label, numbers: g.numbers })));
+      } catch (err) { console.error(err); }
     }
+
+    // Form logic
+    const form = document.getElementById("contact-form");
+    const status = document.getElementById("form-status");
+    const submitBtn = document.getElementById("submit-btn");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      submitBtn.disabled = true;
+      submitBtn.innerText = "전송 중...";
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' }
+        });
+        if (response.ok) {
+          status.innerText = "🚀 문의가 전송되었습니다!";
+          status.className = "success";
+          form.reset();
+        } else { throw new Error(); }
+      } catch {
+        status.innerText = "전송 오류가 발생했습니다.";
+        status.className = "error";
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = "문의 보내기";
+        status.style.display = "block";
+      }
+    });
   </script>
 </body>
 </html>
