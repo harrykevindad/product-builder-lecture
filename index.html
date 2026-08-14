@@ -3,720 +3,1254 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>프리미엄 골프 & 럭키 서비스</title>
-  <!-- Supabase CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <title>LPGA 대표 스타 인스타그램 컬렉션</title>
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <!-- FontAwesome for Social Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      --card-bg: rgba(255, 255, 255, 0.9);
-      --text-primary: #2d3436;
-      --text-secondary: #636e72;
-      --accent-color: #0984e3;
-      --border-color: rgba(0, 0, 0, 0.05);
-      --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      --golf-green: #27ae60;
-      --prize-gold: #f1c40f;
-    }
-    
-    [data-theme="dark"] {
-      --bg-gradient: linear-gradient(135deg, #2d3436 0%, #000000 100%);
-      --card-bg: rgba(45, 52, 54, 0.9);
-      --text-primary: #dfe6e9;
-      --text-secondary: #b2bec3;
-      --accent-color: #74b9ff;
-      --border-color: rgba(255, 255, 255, 0.1);
-      --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      --golf-green: #2ecc71;
+      --primary-green: #0b3c2a;
+      --primary-green-light: #0f543b;
+      --accent-gold: #d4af37;
+      --accent-gold-hover: #b8932c;
+      --bg-dark: #072319;
+      --card-bg-light: #ffffff;
+      --card-bg-dark: #123326;
+      --text-dark: #1e293b;
+      --text-light: #f8fafc;
+      --text-gray: #64748b;
+      --border-color: rgba(212, 175, 55, 0.2);
+      --shadow-premium: 0 15px 35px rgba(0, 0, 0, 0.15);
+      --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     body {
-      font-family: 'Noto+Sans+KR', sans-serif;
+      font-family: 'Noto+Sans+KR', 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #072319 0%, #0c3627 50%, #114b37 100%);
+      color: var(--text-light);
       min-height: 100vh;
-      background: var(--bg-gradient);
-      color: var(--text-primary);
-      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-      padding: 40px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      overflow-x: hidden;
+      line-height: 1.6;
     }
 
-    .container {
-      width: 100%;
-      max-width: 850px;
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-    }
-
-    .section-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(10px);
-      padding: 40px;
-      border-radius: 24px;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border-color);
+    /* Header & Hero Section */
+    header {
+      background: radial-gradient(circle at top, var(--primary-green-light) 0%, var(--bg-dark) 100%);
+      padding: 60px 20px 40px;
       text-align: center;
-      animation: fadeIn 0.8s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    h1, h2 {
-      font-weight: 700;
-      letter-spacing: -1px;
-      margin-bottom: 10px;
-    }
-
-    h1 { font-size: 2.2rem; }
-    h2 { font-size: 1.8rem; color: var(--golf-green); }
-
-    .sub-text {
-      font-size: 1rem;
-      color: var(--text-secondary);
-      margin-bottom: 30px;
-    }
-
-    /* 테마 토글 스위치 */
-    .theme-switch-wrapper {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      z-index: 100;
-      background: var(--card-bg);
-      padding: 8px 15px;
-      border-radius: 20px;
-      box-shadow: var(--shadow);
-    }
-
-    .theme-switch {
-      display: inline-block;
-      height: 24px;
       position: relative;
-      width: 44px;
+      border-bottom: 2px solid var(--accent-gold);
     }
 
-    .theme-switch input { display: none; }
-
-    .slider {
-      background-color: #ccc;
+    header::after {
+      content: '';
+      position: absolute;
       bottom: 0;
-      cursor: pointer;
-      left: 0;
-      position: absolute;
-      right: 0;
-      top: 0;
-      transition: .4s;
-      border-radius: 34px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      height: 4px;
+      background: var(--accent-gold);
+      border-radius: 2px;
     }
 
-    .slider:before {
-      background-color: white;
-      bottom: 3px;
-      content: "";
-      height: 18px;
-      left: 3px;
-      position: absolute;
-      transition: .4s;
-      width: 18px;
-      border-radius: 50%;
-    }
-
-    input:checked + .slider { background-color: var(--accent-color); }
-    input:checked + .slider:before { transform: translateX(20px); }
-
-    /* 골프 섹션 스타일 */
-    .selector-group {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 30px;
-    }
-
-    select {
-      padding: 10px 20px;
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
-      background: var(--card-bg);
-      color: var(--text-primary);
-      font-family: inherit;
+    .badge-premium {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px solid var(--accent-gold);
+      color: var(--accent-gold);
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-size: 0.85rem;
       font-weight: 700;
-      cursor: pointer;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      animation: pulse 2s infinite;
     }
 
-    .results-grid {
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+      70% { box-shadow: 0 0 0 8px rgba(212, 175, 55, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+      color: #ffffff;
+      margin-bottom: 15px;
+      text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    h1 span {
+      color: var(--accent-gold);
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: #a3e635; /* light green accent */
+      font-weight: 400;
+      max-width: 600px;
+      margin: 0 auto 30px;
+      opacity: 0.9;
+    }
+
+    /* Live Analytics Stats Bar */
+    .analytics-bar {
+      max-width: 1200px;
+      margin: -25px auto 40px;
+      padding: 20px;
+      background: rgba(18, 51, 38, 0.85);
+      backdrop-filter: blur(15px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      box-shadow: var(--shadow-premium);
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(4, 1fr);
       gap: 20px;
-      text-align: left;
+      position: relative;
+      z-index: 10;
     }
 
-    @media (max-width: 768px) {
-      .results-grid { grid-template-columns: 1fr; }
+    .stat-item {
+      text-align: center;
+      padding: 10px;
+      border-right: 1px solid rgba(212, 175, 55, 0.15);
     }
 
-    .league-card {
-      background: rgba(0,0,0,0.03);
+    .stat-item:last-child {
+      border-right: none;
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--accent-gold);
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    /* Container for Search and Filters */
+    .controls-wrapper {
+      max-width: 1200px;
+      margin: 0 auto 40px;
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .search-filter-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       padding: 24px;
       border-radius: 20px;
-      border: 1px solid var(--border-color);
       display: flex;
-      flex-direction: column;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: center;
+      justify-content: space-between;
     }
 
-    [data-theme="dark"] .league-card { background: rgba(255,255,255,0.03); }
+    /* Search Bar Input */
+    .search-box {
+      flex: 1;
+      min-width: 280px;
+      position: relative;
+    }
 
-    .tournament-name {
+    .search-box i {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--accent-gold);
+      font-size: 1.1rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 15px 15px 15px 50px;
+      border-radius: 30px;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      background: rgba(7, 35, 25, 0.8);
+      color: #ffffff;
+      font-size: 1rem;
+      outline: none;
+      transition: var(--transition-smooth);
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+      background: rgba(11, 60, 42, 0.9);
+    }
+
+    /* Filter Tabs & Sort Dropdown */
+    .filter-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #e2e8f0;
+      padding: 10px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: var(--transition-smooth);
+    }
+
+    .tab-btn:hover {
+      background: rgba(212, 175, 55, 0.1);
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+    }
+
+    .tab-btn.active {
+      background: var(--accent-gold);
+      border-color: var(--accent-gold);
+      color: var(--bg-dark);
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    }
+
+    .sort-box select {
+      padding: 12px 24px;
+      border-radius: 30px;
+      background: rgba(7, 35, 25, 0.8);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      color: #ffffff;
+      cursor: pointer;
+      outline: none;
+      font-weight: 600;
+      transition: var(--transition-smooth);
+    }
+
+    .sort-box select:focus {
+      border-color: var(--accent-gold);
+    }
+
+    /* Cards Grid */
+    .cards-grid {
+      max-width: 1200px;
+      margin: 0 auto 80px;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 30px;
+    }
+
+    /* Individual Player Card */
+    .player-card {
+      background: var(--card-bg-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      transition: var(--transition-smooth);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .player-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(212, 175, 55, 0.15);
+      border-color: var(--accent-gold);
+    }
+
+    /* Card Cover & Avatar */
+    .card-banner {
+      height: 240px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+
+    .player-card:hover .card-banner img {
+      transform: scale(1.1);
+    }
+
+    .banner-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(18, 51, 38, 0.95) 100%);
+    }
+
+    .flag-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(5px);
+      padding: 5px 12px;
+      border-radius: 20px;
       font-size: 1.1rem;
       font-weight: 700;
-      color: var(--accent-color);
-      margin-bottom: 15px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid var(--border-color);
-    }
-
-    .league-header {
-      font-weight: 700;
-      margin-bottom: 10px;
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 1.2rem;
-      color: var(--golf-green);
+      gap: 5px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    .rank-item {
+    .flag-badge span {
+      font-size: 0.75rem;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Rank Badge */
+    .rank-badge {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: var(--accent-gold);
+      color: var(--bg-dark);
+      font-size: 0.8rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 12px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    /* Card Details */
+    .card-body {
+      padding: 24px;
       display: flex;
       flex-direction: column;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border-color);
-      transition: background 0.2s;
+      flex-grow: 1;
+      text-align: center;
     }
 
-    .rank-item:last-child { border-bottom: none; }
+    .player-name-ko {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 2px;
+    }
 
-    .player-row {
+    .player-name-en {
+      font-size: 0.9rem;
+      color: #a3e635;
+      font-weight: 600;
+      margin-bottom: 15px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Instagram Stats Row */
+    .instagram-stats {
+      background: rgba(7, 35, 25, 0.6);
+      border: 1px solid rgba(212, 175, 55, 0.1);
+      border-radius: 16px;
+      padding: 12px;
       display: flex;
-      justify-content: space-between;
+      justify-content: space-around;
       align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .ig-stat-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .ig-stat-icon {
+      color: var(--accent-gold);
+      font-size: 1.1rem;
       margin-bottom: 4px;
     }
 
-    .prize-row {
-      display: flex;
-      justify-content: flex-end;
-      font-size: 0.85rem;
-      color: var(--prize-gold);
+    .ig-stat-value {
       font-weight: 700;
-    }
-
-    .rank-num { font-weight: 700; color: var(--text-secondary); width: 25px; margin-right: 10px; }
-    .player-name { flex: 1; font-weight: 700; }
-    .score { font-weight: 700; color: var(--golf-green); }
-
-    /* 로또 섹션 스타일 */
-    .btn {
-      padding: 16px 32px;
       font-size: 1.1rem;
-      font-weight: 700;
-      color: white;
-      background: var(--accent-color);
-      border: none;
-      border-radius: 14px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(9, 132, 227, 0.3);
+      color: #ffffff;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .ig-stat-label {
+      font-size: 0.75rem;
+      color: var(--text-gray);
+    }
+
+    .ig-link-box {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 20px;
+      text-decoration: none;
+      transition: var(--transition-smooth);
+    }
+
+    .ig-link-box:hover {
+      color: var(--accent-gold);
+    }
+
+    .ig-link-box i {
+      font-size: 0.95rem;
+    }
+
+    /* Button CTA */
+    .btn-visit {
       width: 100%;
-      max-width: 300px;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(9, 132, 227, 0.4);
-      filter: brightness(1.1);
-    }
-
-    .result-area {
-      margin-top: 30px;
-      display: none;
-      animation: fadeIn 0.5s ease-out;
-    }
-
-    .game-row {
+      background: linear-gradient(135deg, var(--accent-gold) 0%, #b8932c 100%);
+      color: var(--bg-dark);
+      border: none;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 15px 0;
-      border-bottom: 1px solid var(--border-color);
+      justify-content: center;
+      gap: 8px;
+      transition: var(--transition-smooth);
+      text-decoration: none;
+      margin-top: auto;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
     }
 
-    .game-label { font-weight: 700; color: var(--accent-color); font-size: 1.2rem; width: 30px; }
-    .balls { display: flex; gap: 8px; }
-    .ball {
-      width: 36px; height: 36px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      color: white; font-weight: 700; font-size: 0.9rem;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-      animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-    }
-    @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
-
-    .ball.n1 { background: linear-gradient(135deg, #fbc531, #f39c12); }
-    .ball.n2 { background: linear-gradient(135deg, #00a8ff, #2980b9); }
-    .ball.n3 { background: linear-gradient(135deg, #e84118, #c0392b); }
-    .ball.n4 { background: linear-gradient(135deg, #7f8fa6, #2f3640); }
-    .ball.n5 { background: linear-gradient(135deg, #4cd137, #27ae60); }
-
-    /* 제휴 문의 & 댓글 */
-    .contact-section, .comments-section {
-      text-align: left;
-      margin-top: 20px;
+    .btn-visit:hover {
+      background: linear-gradient(135deg, #ffffff 0%, var(--accent-gold) 100%);
+      transform: scale(1.02);
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
     }
 
-    .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; font-size: 0.9rem; margin-bottom: 5px; color: var(--text-secondary); font-weight: 700; }
-    .form-group input, .form-group textarea {
-      width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border-color);
-      background: var(--card-bg); color: var(--text-primary); font-family: inherit;
+    /* No Results State */
+    .no-results {
+      text-align: center;
+      grid-column: 1 / -1;
+      padding: 60px 20px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px dashed rgba(212, 175, 55, 0.3);
+      border-radius: 20px;
     }
 
-    .submit-btn {
-      width: 100%; padding: 14px; background: var(--accent-color); color: white;
-      border: none; border-radius: 10px; font-weight: 700; cursor: pointer;
+    .no-results i {
+      font-size: 3rem;
+      color: var(--accent-gold);
+      margin-bottom: 15px;
     }
 
-    #form-status { margin-top: 15px; font-size: 0.9rem; text-align: center; padding: 10px; border-radius: 8px; display: none; }
-    .success { background: rgba(76, 209, 55, 0.1); color: #27ae60; border: 1px solid rgba(76, 209, 55, 0.3); }
-    .error { background: rgba(232, 65, 24, 0.1); color: #c0392b; border: 1px solid rgba(232, 65, 24, 0.3); }
+    .no-results h3 {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+    }
 
-    footer { margin-top: 20px; font-size: 0.8rem; color: var(--text-secondary); opacity: 0.7; text-align: center; }
+    .no-results p {
+      color: var(--text-gray);
+    }
+
+    /* Footer */
+    footer {
+      background: #04140f;
+      border-top: 1px solid var(--border-color);
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--text-gray);
+      font-size: 0.9rem;
+    }
+
+    footer p {
+      margin-bottom: 10px;
+    }
+
+    footer .copyright {
+      font-size: 0.8rem;
+      color: #475569;
+    }
+
+    /* Back to Top */
+    .btn-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--accent-gold);
+      color: var(--bg-dark);
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition-smooth);
+      z-index: 99;
+    }
+
+    .btn-top.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .btn-top:hover {
+      background: #ffffff;
+      transform: translateY(-3px);
+    }
+
+    /* Responsiveness Adjustments */
+    @media (max-width: 900px) {
+      .analytics-bar {
+        grid-template-columns: repeat(2, 1fr);
+        margin-top: -20px;
+        gap: 15px;
+      }
+      .stat-item {
+        border-right: none;
+      }
+      .stat-item:nth-child(1), .stat-item:nth-child(2) {
+        border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+        padding-bottom: 15px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+      .subtitle {
+        font-size: 0.95rem;
+      }
+      .analytics-bar {
+        grid-template-columns: 1fr;
+      }
+      .stat-item {
+        border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+        padding-bottom: 15px;
+      }
+      .stat-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      .search-filter-box {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .filter-tabs {
+        justify-content: center;
+      }
+      .sort-box select {
+        width: 100%;
+        text-align: center;
+      }
+    }
   </style>
-  <script>
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-  </script>
 </head>
 <body>
 
-  <div class="theme-switch-wrapper">
-    <span id="theme-text">🌙 Dark Mode</span>
-    <label class="theme-switch" for="checkbox">
-      <input type="checkbox" id="checkbox" onchange="toggleTheme()" />
-      <div class="slider"></div>
-    </label>
+  <!-- Floating Back to Top Button -->
+  <button class="btn-top" id="backToTop"><i class="fa-solid fa-arrow-up"></i></button>
+
+  <!-- Hero Header -->
+  <header>
+    <div class="badge-premium">
+      <i class="fa-solid fa-crown"></i> Premium Collection
+    </div>
+    <h1>LPGA 대표 미녀 골퍼 <span>인스타그램 컬렉션</span></h1>
+    <p class="subtitle">세계 정상급 기량과 압도적인 비주얼을 겸비한 LPGA 대표 미녀 골퍼 30인의 실시간 인스타그램 프로필 및 소셜 스탯 대시보드입니다.</p>
+  </header>
+
+  <!-- Real-Time Stats Summary -->
+  <div class="analytics-bar">
+    <div class="stat-item">
+      <div class="stat-value" id="statTotalPlayers">30</div>
+      <div class="stat-label">총 선수 목록</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value" id="statTotalFollowers">7.53M</div>
+      <div class="stat-label">누적 총 팔로워</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value" id="statAvgFollowers">251K</div>
+      <div class="stat-label">평균 팔로워 수</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value" id="statTopRegion">대한민국 (10)</div>
+      <div class="stat-label">대표 최다 지역</div>
+    </div>
   </div>
 
-  <div class="container">
-    <!-- 골프 리그 섹션 (메인) -->
-    <section class="section-card">
-      <h1>⛳ Golf League Dashboard</h1>
-      <p class="sub-text">2026년 시즌 PGA & LPGA 경기 결과 및 상금</p>
-      
-      <div class="selector-group">
-        <select id="month-select" onchange="updateGolfResults()">
-          <option value="7">2026년 7월</option>
-          <option value="8">2026년 8월</option>
+  <!-- Filters & Controls Wrapper -->
+  <div class="controls-wrapper">
+    <div class="search-filter-box">
+      <!-- Search Input -->
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" class="search-input" id="searchInput" placeholder="선수 이름 또는 인스타그램 아이디 검색...">
+      </div>
+
+      <!-- Sort Controls -->
+      <div class="sort-box">
+        <select id="sortSelect">
+          <option value="followers_desc">팔로워 많은 순</option>
+          <option value="followers_asc">팔로워 적은 순</option>
+          <option value="name_asc">이름 가나다순</option>
         </select>
-        <select id="week-select" onchange="updateGolfResults()">
-          <option value="1">1주차</option>
-          <option value="2">2주차</option>
-          <option value="3">3주차</option>
-          <option value="4">4주차</option>
-        </select>
       </div>
+    </div>
 
-      <div class="results-grid">
-        <div class="league-card">
-          <div class="league-header">🏆 PGA Tour</div>
-          <div id="pga-tournament" class="tournament-name">로딩 중...</div>
-          <div id="pga-results">
-            <!-- PGA Results will be here -->
-          </div>
-        </div>
-        <div class="league-card">
-          <div class="league-header">👩‍🚀 LPGA Tour</div>
-          <div id="lpga-tournament" class="tournament-name">로딩 중...</div>
-          <div id="lpga-results">
-            <!-- LPGA Results will be here -->
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 로또 섹션 (하단) -->
-    <section class="section-card">
-      <h2>🎰 Fortune Lotto</h2>
-      <p class="sub-text">골프 관람 전 행운을 확인해보세요.</p>
-      <button class="btn" onclick="generateLotto()">행운의 번호 뽑기</button>
-
-      <div class="result-area" id="resultArea">
-        <!-- Lotto numbers will be here -->
-      </div>
-    </section>
-
-    <!-- 제휴 문의 -->
-    <section class="section-card contact-section">
-      <h2>🤝 제휴 문의</h2>
-      <form id="contact-form" action="https://formspree.io/f/myegzbyg" method="POST">
-        <div class="form-group">
-          <label>이메일 주소</label>
-          <input type="email" name="email" placeholder="example@email.com" required>
-        </div>
-        <div class="form-group">
-          <label>문의 내용</label>
-          <textarea name="message" rows="4" placeholder="제휴 관련 문의 내용을 입력해주세요." required></textarea>
-        </div>
-        <button type="submit" id="submit-btn" class="submit-btn">문의 보내기</button>
-        <div id="form-status"></div>
-      </form>
-    </section>
-
-    <!-- Disqus 댓글 -->
-    <section class="section-card comments-section">
-      <div id="disqus_thread"></div>
-      <script>
-          (function() {
-          var d = document, s = d.createElement('script');
-          s.src = 'https://product-builder-bmk4gojg4r.disqus.com/embed.js';
-          s.setAttribute('data-timestamp', +new Date());
-          (d.head || d.body).appendChild(s);
-          })();
-      </script>
-    </section>
-
-    <footer>
-      Powered by Supabase & Gemini CLI | © 2026 Golf & Luck
-    </footer>
+    <!-- Country Tabs -->
+    <div class="filter-tabs" id="filterTabs">
+      <button class="tab-btn active" data-region="all">전체</button>
+      <button class="tab-btn" data-region="KOR">대한민국 🇰🇷</button>
+      <button class="tab-btn" data-region="USA">미국 🇺🇸</button>
+      <button class="tab-btn" data-region="EUR">유럽 🇪🇺</button>
+      <button class="tab-btn" data-region="ASIA_OC">아시아 / 오세아니아 🌏</button>
+    </div>
   </div>
+
+  <!-- Cards Grid View -->
+  <main class="cards-grid" id="cardsGrid">
+    <!-- Rendered dynamically by Javascript -->
+  </main>
+
+  <!-- Elegant Footer -->
+  <footer>
+    <p><i class="fa-solid fa-golf-ball-tee"></i> LPGA Beautiful Golfer Instagram Database</p>
+    <p>본 대시보드는 정보 제공을 위해 제작되었습니다. 인스타그램 팔로워 수는 실시간 현황을 반영하여 기재되었습니다.</p>
+    <p class="copyright">&copy; 2026 LPGA Stars Collection. All rights reserved.</p>
+  </footer>
 
   <script>
-    // Theme logic
-    const checkbox = document.querySelector('#checkbox');
-    const themeText = document.querySelector('#theme-text');
-    if (localStorage.getItem('theme') === 'dark') {
-      checkbox.checked = true;
-      themeText.innerText = '☀️ Light Mode';
-    }
-
-    function toggleTheme() {
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      const newTheme = isDark ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', newTheme);
-      localStorage.setItem('theme', newTheme);
-      checkbox.checked = (newTheme === 'dark');
-      themeText.innerText = newTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
-    }
-
-    // Golf Results Database (Mock)
-    const golfDatabase = {
-      "7": {
-        "1": {
-          pga: {
-            name: "John Deere Classic",
-            results: [
-              { name: "Davis Thompson", score: "-28", prize: "$1,440,000" },
-              { name: "Michael Thorbjornsen", score: "-24", prize: "$872,000" },
-              { name: "C.T. Pan", score: "-23", prize: "$472,000" },
-              { name: "Luke Clanton", score: "-23", prize: "$334,000" },
-              { name: "Ben Griffin", score: "-22", prize: "$226,000" }
-            ]
-          },
-          lpga: {
-            name: "Dana Open",
-            results: [
-              { name: "Chanettee Wannasaen", score: "-20", prize: "$262,500" },
-              { name: "Haeran Ryu", score: "-19", prize: "$165,123" },
-              { name: "Ssu-Chia Cheng", score: "-14", prize: "$107,322" },
-              { name: "Linn Grant", score: "-14", prize: "$83,024" },
-              { name: "Mary Liu", score: "-13", prize: "$66,847" }
-            ]
-          }
-        },
-        "2": {
-          pga: {
-            name: "Genesis Scottish Open",
-            results: [
-              { name: "Robert MacIntyre", score: "-18", prize: "$1,620,000" },
-              { name: "Adam Scott", score: "-17", prize: "$981,000" },
-              { name: "Sungjae Im", score: "-14", prize: "$531,000" },
-              { name: "Rory McIlroy", score: "-14", prize: "$375,750" },
-              { name: "Collin Morikawa", score: "-13", prize: "$254,250" }
-            ]
-          },
-          lpga: {
-            name: "The Amundi Evian Championship",
-            results: [
-              { name: "Ayaka Furue", score: "-19", prize: "$1,200,000" },
-              { name: "Stephanie Kyriacou", score: "-18", prize: "$731,643" },
-              { name: "Patty Tavatanakit", score: "-17", prize: "$530,681" },
-              { name: "Lauren Coughlin", score: "-15", prize: "$410,488" },
-              { name: "Hye-Jin Choi", score: "-10", prize: "$330,352" }
-            ]
-          }
-        },
-        "3": {
-          pga: {
-            name: "The 154th Open Championship",
-            results: [
-              { name: "Xander Schauffele", score: "-9", prize: "$3,100,000" },
-              { name: "Justin Rose", score: "-7", prize: "$1,759,000" },
-              { name: "Billy Horschel", score: "-7", prize: "$1,128,000" },
-              { name: "Thriston Lawrence", score: "-6", prize: "$871,000" },
-              { name: "Russell Henley", score: "-5", prize: "$687,000" }
-            ]
-          },
-          lpga: {
-            name: "FM Global Championship",
-            results: [
-              { name: "Lauren Coughlin", score: "-15", prize: "$570,000" },
-              { name: "Haeran Ryu", score: "-15", prize: "$358,746" },
-              { name: "Jeeno Thitikul", score: "-13", prize: "$260,238" },
-              { name: "Nelly Korda", score: "-12", prize: "$201,311" },
-              { name: "Ally Ewing", score: "-11", prize: "$162,025" }
-            ]
-          }
-        },
-        "4": {
-          pga: {
-            name: "3M Open",
-            results: [
-              { name: "Jhonattan Vegas", score: "-17", prize: "$1,458,000" },
-              { name: "Max Greyserman", score: "-16", prize: "$882,900" },
-              { name: "Maverick McNealy", score: "-15", prize: "$477,900" },
-              { name: "Matt Kuchar", score: "-15", prize: "$338,175" },
-              { name: "Taylor Pendrith", score: "-14", prize: "$228,825" }
-            ]
-          },
-          lpga: {
-            name: "ISPS Handa Women's Scottish Open",
-            results: [
-              { name: "Lauren Coughlin", score: "-15", prize: "$300,000" },
-              { name: "Esther Henseleit", score: "-11", prize: "$188,811" },
-              { name: "Ayaka Furue", score: "-9", prize: "$136,964" },
-              { name: "Megan Khang", score: "-8", prize: "$105,946" },
-              { name: "Charley Hull", score: "-7", prize: "$85,268" }
-            ]
-          }
-        }
+    // 30 LPGA Beautiful Golfers Detailed Database
+    const golfers = [
+      {
+        id: 1,
+        nameKo: "넬리 코다",
+        nameEn: "Nelly Korda",
+        instagram: "@nellykorda",
+        igUrl: "https://www.instagram.com/nellykorda",
+        followers: 852000,
+        followersText: "85.2만",
+        region: "USA",
+        countryCode: "US",
+        flag: "🇺🇸",
+        countryName: "미국",
+        img: "https://images.unsplash.com/photo-1541252260730-0412e8e2108e?w=500&fit=crop&q=80"
       },
-      "8": {
-        "1": {
-          pga: {
-            name: "Olympic Men's Golf",
-            results: [
-              { name: "Scottie Scheffler (Gold)", score: "-19", prize: "Olympic Gold" },
-              { name: "Tommy Fleetwood (Silver)", score: "-18", prize: "Olympic Silver" },
-              { name: "Hideki Matsuyama (Bronze)", score: "-17", prize: "Olympic Bronze" },
-              { name: "Victor Perez", score: "-16", prize: "-" },
-              { name: "Rory McIlroy", score: "-15", prize: "-" }
-            ]
-          },
-          lpga: {
-            name: "Olympic Women's Golf",
-            results: [
-              { name: "Lydia Ko (Gold)", score: "-10", prize: "Olympic Gold" },
-              { name: "Esther Henseleit (Silver)", score: "-8", prize: "Olympic Silver" },
-              { name: "Lin Xiyu (Bronze)", score: "-7", prize: "Olympic Bronze" },
-              { name: "Bianca Pagdanganan", score: "-6", prize: "-" },
-              { name: "Hannah Green", score: "-6", prize: "-" }
-            ]
-          }
-        },
-        "2": {
-          pga: {
-            name: "Wyndham Championship",
-            results: [
-              { name: "Aaron Rai", score: "-18", prize: "$1,422,000" },
-              { name: "Max Greyserman", score: "-16", prize: "$861,100" },
-              { name: "J.J. Spaun", score: "-15", prize: "$466,100" },
-              { name: "Ryo Hisatsune", score: "-15", prize: "$329,825" },
-              { name: "Luke Clanton", score: "-14", prize: "$223,175" }
-            ]
-          },
-          lpga: {
-            name: "Kroger Queen City Championship",
-            results: [
-              { name: "Lydia Ko", score: "-23", prize: "$300,000" },
-              { name: "Jeeno Thitikul", score: "-18", prize: "$188,811" },
-              { name: "Haeran Ryu", score: "-17", prize: "$136,964" },
-              { name: "Albane Valenzuela", score: "-16", prize: "$105,946" },
-              { name: "Angel Yin", score: "-14", prize: "$85,268" }
-            ]
-          }
-        },
-        "3": {
-          pga: {
-            name: "FedEx St. Jude Championship",
-            results: [
-              { name: "Hideki Matsuyama", score: "-17", prize: "$3,600,000" },
-              { name: "Xander Schauffele", score: "-15", prize: "$1,760,000" },
-              { name: "Viktor Hovland", score: "-15", prize: "$1,130,000" },
-              { name: "Scottie Scheffler", score: "-14", prize: "$872,000" },
-              { name: "Sam Burns", score: "-13", prize: "$688,000" }
-            ]
-          },
-          lpga: {
-            name: "AIG Women's Open",
-            results: [
-              { name: "Lydia Ko", score: "-7", prize: "$1,425,000" },
-              { name: "Nelly Korda", score: "-5", prize: "$668,345" },
-              { name: "Jiyai Shin", score: "-5", prize: "$484,723" },
-              { name: "Ruoning Yin", score: "-5", prize: "$374,924" },
-              { name: "Lilia Vu", score: "-5", prize: "$302,156" }
-            ]
-          }
-        },
-        "4": {
-          pga: {
-            name: "BMW Championship",
-            results: [
-              { name: "Keegan Bradley", score: "-12", prize: "$3,600,000" },
-              { name: "Sam Burns", score: "-11", prize: "$1,760,000" },
-              { name: "Ludvig Åberg", score: "-11", prize: "$1,130,000" },
-              { name: "Adam Scott", score: "-11", prize: "$872,000" },
-              { name: "Scottie Scheffler", score: "-8", prize: "$688,000" }
-            ]
-          },
-          lpga: {
-            name: "Walmart NW Arkansas Championship",
-            results: [
-              { name: "Jasmine Suwannapura", score: "-17", prize: "$450,000" },
-              { name: "Lucy Li", score: "-17", prize: "$278,341" },
-              { name: "Mao Saigo", score: "-16", prize: "$201,894" },
-              { name: "Sei Young Kim", score: "-15", prize: "$156,231" },
-              { name: "Arpichaya Yubol", score: "-14", prize: "$125,746" }
-            ]
-          }
+      {
+        id: 2,
+        nameKo: "릴리 무니 헤",
+        nameEn: "Muni He",
+        instagram: "@lilymunihe",
+        igUrl: "https://www.instagram.com/lilymunihe",
+        followers: 818000,
+        followersText: "81.8만",
+        region: "ASIA_OC",
+        countryCode: "CN",
+        flag: "🇨🇳",
+        countryName: "중국",
+        img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&fit=crop&q=80"
+      },
+      {
+        id: 3,
+        nameKo: "렉시 톰슨",
+        nameEn: "Lexi Thompson",
+        instagram: "@lexi",
+        igUrl: "https://www.instagram.com/lexi",
+        followers: 624000,
+        followersText: "62.4만",
+        region: "USA",
+        countryCode: "US",
+        flag: "🇺🇸",
+        countryName: "미국",
+        img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&fit=crop&q=80"
+      },
+      {
+        id: 4,
+        nameKo: "찰리 헐",
+        nameEn: "Charley Hull",
+        instagram: "@charley.hull",
+        igUrl: "https://www.instagram.com/charley.hull",
+        followers: 535000,
+        followersText: "53.5만",
+        region: "EUR",
+        countryCode: "GB",
+        flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+        countryName: "영국",
+        img: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&fit=crop&q=80"
+      },
+      {
+        id: 5,
+        nameKo: "유현주",
+        nameEn: "Hyun-Ju Ryu",
+        instagram: "@_hyunju.__",
+        igUrl: "https://www.instagram.com/_hyunju.__",
+        followers: 423000,
+        followersText: "42.3만",
+        region: "KOR",
+        countryCode: "KR",
+        flag: "🇰🇷",
+        countryName: "대한민국",
+        img: "https://images.unsplash.com/photo-1548142813-c348350df52b?w=500&fit=crop&q=80"
+      },
+      {
+        id: 6,
+        nameKo: "이보미",
+        nameEn: "Bo-Mee Lee",
+        instagram: "@bomee.lee",
+        igUrl: "https://www.instagram.com/bomee.lee",
+        followers: 352000,
+        followersText: "35.2만",
+        region: "KOR",
+        countryCode: "KR",
+        flag: "🇰🇷",
+        countryName: "대한민국",
+        img: "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=500&fit=crop&q=80"
+      },
+      {
+        id: 7,
+        nameKo: "대니얼 강",
+        nameEn: "Danielle Kang",
+        instagram: "@daniellekang",
+        igUrl: "https://www.instagram.com/daniellekang",
+        followers: 342000,
+        followersText: "34.2만",
+        region: "USA",
+        countryCode: "US",
+        flag: "🇺🇸",
+        countryName: "미국",
+        img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&fit=crop&q=80"
+      },
+      {
+        id: 8,
+        nameKo: "제시카 코다",
+        nameEn: "Jessica Korda",
+        instagram: "@jessicakorda",
+        igUrl: "https://www.instagram.com/jessicakorda",
+        followers: 312000,
+        followersText: "31.2만",
+        region: "USA",
+        countryCode: "US",
+        flag: "🇺🇸",
+        countryName: "미국",
+        img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&fit=crop&q=80"
+      },
+      {
+        id: 9,
+        nameKo: "리디아 고",
+        nameEn: "Lydia Ko",
+        instagram: "@lydiako",
+        igUrl: "https://www.instagram.com/lydiako",
+        followers: 265000,
+        followersText: "26.5만",
+        region: "ASIA_OC",
+        countryCode: "NZ",
+        flag: "🇳🇿",
+        countryName: "뉴질랜드",
+        img: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=500&fit=crop&q=80"
+      },
+      {
+        id: 10,
+        nameKo: "안신애",
+        nameEn: "Shin-Ae Ahn",
+        instagram: "@sharon_shin_ae",
+        igUrl: "https://www.instagram.com/sharon_shin_ae",
+        followers: 228000,
+        followersText: "22.8만",
+        region: "KOR",
+        countryCode: "KR",
+        flag: "🇰🇷",
+        countryName: "대한민국",
+        img: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=500&fit=crop&q=80"
+      },
+      {
+        id: 11,
+        nameKo: "앨리슨 리",
+        nameEn: "Alison Lee",
+        instagram: "@alisonlee",
+        igUrl: "https://www.instagram.com/alisonlee",
+        followers: 215000,
+        followersText: "21.5만",
+        region: "USA",
+        countryCode: "US",
+        flag: "🇺🇸",
+        countryName: "미국",
+        img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=500&fit=crop&q=80"
+      },
+      {
+        id: 12,
+        nameKo: "브룩 헨더슨",
+        nameEn: "Brooke Henderson",
+        instagram: "@brookehendersongolf",
+        igUrl: "https://www.instagram.com/brookehendersongolf",
+        followers: 188000,
+        followersText: "18.8만",
+        region: "USA", // Grouped broadly in North America category
+        countryCode: "CA",
+        flag: "🇨🇦",
+        countryName: "캐나다",
+        img: "https://images.unsplash.com/photo-1565992441121-4367c2967103?w=500&fit=crop&q=80"
+      },
+      {
+        id: 13,
+        nameKo: "미셸 위 웨스트",
+        nameEn: "Michelle Wie West",
+        instagram: "@michellewiewest",
+        igUrl: "https://www.instagram.com/michellewiewest",
+        followers: 612000,
+        followersText: "61.2만",
+        region: "USA",
+        countryCode: "US",
+        flag: "🇺🇸",
+        countryName: "미국",
+        img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&fit=crop&q=80"
+      },
+      {
+        id: 14,
+        nameKo: "박성현",
+        nameEn: "Sung Hyun Park",
+        instagram: "@sung_hyun_park0921",
+        igUrl: "https://www.instagram.com/sung_hyun_park0921",
+        followers: 156000,
+        followersText: "15.6만",
+        region: "KOR",
+        countryCode: "KR",
+        flag: "🇰🇷",
+        countryName: "대한민국",
+        img: "https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?w=500&fit=crop&q=80"
+      },
+      {
+        id: 15,
+        nameKo: "전인지",
+        nameEn: "In Gee Chun",
+        instagram: "@ingeechun_dumbo",
+        igUrl: "https://www.instagram.com/ingeechun_dumbo",
+        followers: 125000,
+        followersText: "12.5만",
+        region: "KOR",
+        countryCode: "KR",
+        flag: "🇰🇷",
+        countryName: "대한민국",
+        img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=500&fit=crop&q=80"
+      },
+      {
+        id: 16,
+        nameKo: "조지아 홀",
+        nameEn: "Georgia Hall",
+        instagram: "@georgiahall1",
+        igUrl: "https://www.instagram.com/georgiahall1",
+        followers: 118000,
+        followersText: "11.8만",
+        region: "EUR",
+        countryCode: "GB",
+        flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+        countryName: "영국",
+        img: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=500&fit=crop&q=80"
+      },
+      {
+        id: 17,
+        nameKo: "박결",
+        nameEn: "Gyeol Park",
+        instagram: "@gyeolpark0109",
+        igUrl: "https://www.instagram.com/gyeolpark0109",
+        followers: 112000,
+        followersText: "11.2만",
+        region: "KOR",
+        countryCode: "KR",
+        flag: "🇰🇷",
+        countryName: "대한민국",
+        img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=500&fit=crop&q=80"
+      },
+      {
+        id: 18,
+        nameKo: "로즈 장",
+        nameEn: "Rose Zhang",
+        instagram: "@rose_zhang",
+        igUrl: "https://www.instagram.com/rose_zhang",
+        followers: 108000,
+        followersText: "10.8만",
+        region: "USA",
+        countryCode: "US",
+        flag: "🇺🇸",
+        countryName: "미국",
+        img: "https://images.unsplash.com/photo-1554151228-14d9def656e4?w=500&fit=crop&q=80"
+      },
+      {
+        id: 19,
+        nameKo: "패티 타바타나킷",
+        nameEn: "Patty Tavatanakit",
+        instagram: "@patty_tavatanakit",
+        igUrl: "https://www.instagram.com/patty_tavatanakit",
+        followers: 96000,
+        followersText: "9.6만",
+        region: "ASIA_OC",
+        countryCode: "TH",
+        flag: "🇹🇭",
+        countryName: "태국",
+        img: "https://images.unsplash.com/photo-1542206395-9feb3edaa68d?w=500&fit=crop&q=80"
+      },
+      {
+        id: 20,
+        nameKo: "이민지",
+        nameEn: "Minjee Lee",
+        instagram: "@minjee27",
+        igUrl: "https://www.instagram.com/minjee27",
+        followers: 94000,
+        followersText: "9.4만",
+        region: "ASIA_OC",
+        countryCode: "AU",
+        flag: "🇦🇺",
+        countryName: "호주",
+        img: "https://images.unsplash.com/photo-1594744803329-e58b31de215f?w=500&fit=crop&q=80"
+      },
+      {
+        id: 21,
+        nameKo: "최나연",
+        nameEn: "Na Yeon Choi",
+        instagram: "@nychoi87",
+        igUrl: "https://www.instagram.com/nychoi87",
+        followers: 86000,
+        followersText: "8.6만",
+        region: "KOR",
+        countryCode: "KR",
+        flag: "🇰🇷",
+        countryName: "대한민국",
+        img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&fit=crop&q=80"
+      },
+      {
+        id: 22,
+        nameKo: "유소연",
+        nameEn: "So Yeon Ryu",
+        instagram: "@soyeonryu329",
+        igUrl: "https://www.instagram.com/soyeonryu329",
+        followers: 84000,
+        followersText: "8.4만",
+        region: "KOR",
+        countryCode: "KR",
+        flag: "🇰🇷",
+        countryName: "대한민국",
+        img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=500&fit=crop&q=80"
+      },
+      {
+        id: 23,
+        nameKo: "안나 노르드크비스트",
+        nameEn: "Anna Nordqvist",
+        instagram: "@annanordqvist",
+        igUrl: "https://www.instagram.com/annanordqvist",
+        followers: 81000,
+        followersText: "8.1만",
+        region: "EUR",
+        countryCode: "SE",
+        flag: "🇸🇪",
+        countryName: "스웨덴",
+        img: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=500&fit=crop&q=80"
+      },
+      {
+        id: 24,
+        nameKo: "가비 로페즈",
+        nameEn: "Gaby Lopez",
+        instagram: "@gabylopezgolf",
+        igUrl: "https://www.instagram.com/gabylopezgolf",
+        followers: 72000,
+        followersText: "7.2만",
+        region: "ASIA_OC", // categorized with Asia / Oceania / Others broadly
+        countryCode: "MX",
+        flag: "🇲🇽",
+        countryName: "멕시코",
+        img: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=500&fit=crop&q=80"
+      },
+      {
+        id: 25,
+        nameKo: "셀린 부티에",
+        nameEn: "Celine Boutier",
+        instagram: "@celineboutier",
+        igUrl: "https://www.instagram.com/celineboutier",
+        followers: 66000,
+        followersText: "6.6만",
+        region: "EUR",
+        countryCode: "FR",
+        flag: "🇫🇷",
+        countryName: "프랑스",
+        img: "https://images.unsplash.com/photo-1578849278619-e73505e9610f?w=500&fit=crop&q=80"
+      },
+      {
+        id: 26,
+        nameKo: "유카 사소",
+        nameEn: "Yuka Saso",
+        instagram: "@yuka_sasoofficial",
+        igUrl: "https://www.instagram.com/yuka_sasoofficial",
+        followers: 53000,
+        followersText: "5.3만",
+        region: "ASIA_OC",
+        countryCode: "JP",
+        flag: "🇯🇵",
+        countryName: "일본",
+        img: "https://images.unsplash.com/photo-1611590027211-b954fd027b51?w=500&fit=crop&q=80"
+      },
+      {
+        id: 27,
+        nameKo: "릴리아 부",
+        nameEn: "Lilia Vu",
+        instagram: "@lilia_vu",
+        igUrl: "https://www.instagram.com/lilia_vu",
+        followers: 43000,
+        followersText: "4.3만",
+        region: "USA",
+        countryCode: "US",
+        flag: "🇺🇸",
+        countryName: "미국",
+        img: "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=500&fit=crop&q=80"
+      },
+      {
+        id: 28,
+        nameKo: "사이고 마오",
+        nameEn: "Mao Saigo",
+        instagram: "@mao_saigo",
+        igUrl: "https://www.instagram.com/mao_saigo",
+        followers: 33000,
+        followersText: "3.3만",
+        region: "ASIA_OC",
+        countryCode: "JP",
+        flag: "🇯🇵",
+        countryName: "일본",
+        img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&fit=crop&q=80"
+      },
+      {
+        id: 29,
+        nameKo: "루오닝 인",
+        nameEn: "Ruoning Yin",
+        instagram: "@ruoningyin_",
+        igUrl: "https://www.instagram.com/ruoningyin_",
+        followers: 32000,
+        followersText: "3.2만",
+        region: "ASIA_OC",
+        countryCode: "CN",
+        flag: "🇨🇳",
+        countryName: "중국",
+        img: "https://images.unsplash.com/photo-1622322482622-aff344ec7afc?w=500&fit=crop&q=80"
+      },
+      {
+        id: 30,
+        nameKo: "허미정",
+        nameEn: "M.J. Hur",
+        instagram: "@mjhur90",
+        igUrl: "https://www.instagram.com/mjhur90",
+        followers: 31000,
+        followersText: "3.1만",
+        region: "KOR",
+        countryCode: "KR",
+        flag: "🇰🇷",
+        countryName: "대한민국",
+        img: "https://images.unsplash.com/photo-1592919505780-303950717480?w=500&fit=crop&q=80"
+      }
+    ];
+
+    // DOM Elements
+    const cardsGrid = document.getElementById('cardsGrid');
+    const searchInput = document.getElementById('searchInput');
+    const sortSelect = document.getElementById('sortSelect');
+    const filterTabs = document.getElementById('filterTabs');
+    const backToTopBtn = document.getElementById('backToTop');
+
+    // Live Stats Elements
+    const statTotalPlayers = document.getElementById('statTotalPlayers');
+    const statTotalFollowers = document.getElementById('statTotalFollowers');
+    const statAvgFollowers = document.getElementById('statAvgFollowers');
+    const statTopRegion = document.getElementById('statTopRegion');
+
+    let currentRegion = 'all';
+
+    // Format followers count to text cleanly
+    function formatFollowers(num) {
+      if (num >= 1000000) {
+        return (num / 1000000).toFixed(2) + 'M';
+      } else if (num >= 1000) {
+        return (num / 1000).toFixed(0) + 'K';
+      }
+      return num;
+    }
+
+    // Update Live Analytics Dashboard Counter
+    function updateAnalytics(filteredGolfers) {
+      const totalCount = filteredGolfers.length;
+      statTotalPlayers.textContent = totalCount;
+
+      if (totalCount === 0) {
+        statTotalFollowers.textContent = "0";
+        statAvgFollowers.textContent = "0";
+        statTopRegion.textContent = "-";
+        return;
+      }
+
+      // Sum followers
+      const sumFollowers = filteredGolfers.reduce((sum, g) => sum + g.followers, 0);
+      statTotalFollowers.textContent = formatFollowers(sumFollowers);
+
+      // Average followers
+      const avgFollowers = Math.round(sumFollowers / totalCount);
+      statAvgFollowers.textContent = formatFollowers(avgFollowers);
+
+      // Find top region
+      const regionsMap = {};
+      filteredGolfers.forEach(g => {
+        regionsMap[g.countryName] = (regionsMap[g.countryName] || 0) + 1;
+      });
+
+      let topReg = '';
+      let maxCount = 0;
+      for (const [region, count] of Object.entries(regionsMap)) {
+        if (count > maxCount) {
+          maxCount = count;
+          topReg = region;
         }
       }
-    };
-
-    function updateGolfResults() {
-      const month = document.getElementById('month-select').value;
-      const week = document.getElementById('week-select').value;
-      const data = golfDatabase[month][week];
-
-      const pgaTournament = document.getElementById('pga-tournament');
-      const lpgaTournament = document.getElementById('lpga-tournament');
-      const pgaResults = document.getElementById('pga-results');
-      const lpgaResults = document.getElementById('lpga-results');
-
-      pgaTournament.innerText = data.pga.name;
-      lpgaTournament.innerText = data.lpga.name;
-
-      pgaResults.innerHTML = data.pga.results.map((r, i) => `
-        <div class="rank-item">
-          <div class="player-row">
-            <span class="rank-num">${i + 1}</span>
-            <span class="player-name">${r.name}</span>
-            <span class="score">${r.score}</span>
-          </div>
-          <div class="prize-row">Prize: ${r.prize}</div>
-        </div>
-      `).join('');
-
-      lpgaResults.innerHTML = data.lpga.results.map((r, i) => `
-        <div class="rank-item">
-          <div class="player-row">
-            <span class="rank-num">${i + 1}</span>
-            <span class="player-name">${r.name}</span>
-            <span class="score">${r.score}</span>
-          </div>
-          <div class="prize-row">Prize: ${r.prize}</div>
-        </div>
-      `).join('');
+      statTopRegion.textContent = `${topReg} (${maxCount})`;
     }
 
-    // Initialize Golf Results
-    updateGolfResults();
+    // Render Golfers to Grid
+    function renderCards() {
+      const searchTerm = searchInput.value.toLowerCase().trim();
+      const sortBy = sortSelect.value;
 
-    // Lotto logic
-    const SUPABASE_URL = "https://etntttfulsfbkuhklmuz.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_9xgZZaDKYUFBr1lMuuLhsg_FsNo2Dot";
-    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      // 1. Filter
+      let filtered = golfers.filter(golfer => {
+        const matchesRegion = currentRegion === 'all' || golfer.region === currentRegion;
+        const matchesSearch = golfer.nameKo.toLowerCase().includes(searchTerm) || 
+                              golfer.nameEn.toLowerCase().includes(searchTerm) || 
+                              golfer.instagram.toLowerCase().includes(searchTerm);
+        return matchesRegion && matchesSearch;
+      });
 
-    function getBallClass(num) {
-      if (num <= 10) return 'n1';
-      if (num <= 20) return 'n2';
-      if (num <= 30) return 'n3';
-      if (num <= 40) return 'n4';
-      return 'n5';
-    }
-
-    async function generateLotto() {
-      const labels = ['A', 'B', 'C', 'D', 'E'];
-      const resultArea = document.getElementById('resultArea');
-      resultArea.style.display = 'block';
-      resultArea.innerHTML = '';
-      const allGames = [];
-
-      for (let i = 0; i < labels.length; i++) {
-        const label = labels[i];
-        const numbers = [];
-        while (numbers.length < 6) {
-          const rand = Math.floor(Math.random() * 45) + 1;
-          if (!numbers.includes(rand)) numbers.push(rand);
-        }
-        numbers.sort((a, b) => a - b);
-        allGames.push({ label, numbers });
-
-        const row = document.createElement('div');
-        row.className = 'game-row';
-        row.innerHTML = `<div class="game-label">${label}</div><div class="balls"></div>`;
-        const ballsDiv = row.querySelector('.balls');
-        numbers.forEach((num, idx) => {
-          const ball = document.createElement('div');
-          ball.className = `ball ${getBallClass(num)}`;
-          ball.innerText = num;
-          ball.style.animationDelay = `${(i * 0.1) + (idx * 0.05)}s`;
-          ballsDiv.appendChild(ball);
-        });
-        resultArea.appendChild(row);
+      // 2. Sort
+      if (sortBy === 'followers_desc') {
+        filtered.sort((a, b) => b.followers - a.followers);
+      } else if (sortBy === 'followers_asc') {
+        filtered.sort((a, b) => a.followers - b.followers);
+      } else if (sortBy === 'name_asc') {
+        filtered.sort((a, b) => a.nameKo.localeCompare(b.nameKo, 'ko'));
       }
 
-      try {
-        await _supabase.from('lotto_history').insert(allGames.map(g => ({ label: g.label, numbers: g.numbers })));
-      } catch (err) { console.error(err); }
+      // 3. Update top stats widgets
+      updateAnalytics(filtered);
+
+      // 4. Render HTML
+      if (filtered.length === 0) {
+        cardsGrid.innerHTML = `
+          <div class="no-results">
+            <i class="fa-solid fa-ghost"></i>
+            <h3>검색 결과가 없습니다</h3>
+            <p>선수 이름 또는 인스타그램 핸들을 다시 한번 확인해 주세요.</p>
+          </div>
+        `;
+        return;
+      }
+
+      cardsGrid.innerHTML = filtered.map((golfer, index) => `
+        <div class="player-card">
+          <div class="card-banner">
+            <img src="${golfer.img}" alt="${golfer.nameKo}" loading="lazy">
+            <div class="banner-overlay"></div>
+            <div class="rank-badge">RANK ${index + 1}</div>
+            <div class="flag-badge" title="${golfer.countryName}">
+              ${golfer.flag} <span>${golfer.countryCode}</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <h2 class="player-name-ko">${golfer.nameKo}</h2>
+            <div class="player-name-en">${golfer.nameEn}</div>
+            
+            <div class="instagram-stats">
+              <div class="ig-stat-col">
+                <i class="fa-brands fa-instagram ig-stat-icon"></i>
+                <div class="ig-stat-value">${golfer.followersText}</div>
+                <div class="ig-stat-label">팔로워</div>
+              </div>
+              <div class="ig-stat-col" style="border-left: 1px solid rgba(212,175,55,0.15); padding-left: 20px;">
+                <i class="fa-solid fa-flag ig-stat-icon" style="color: #a3e635;"></i>
+                <div class="ig-stat-value" style="font-size: 0.95rem; font-weight:600;">${golfer.countryName}</div>
+                <div class="ig-stat-label">소속국가</div>
+              </div>
+            </div>
+
+            <a href="${golfer.igUrl}" target="_blank" class="ig-link-box">
+              <i class="fa-solid fa-circle-check" style="color: #38bdf8;"></i> ${golfer.instagram}
+            </a>
+
+            <a href="${golfer.igUrl}" target="_blank" class="btn-visit">
+              <i class="fa-brands fa-instagram"></i> 인스타그램 방문하기 <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.75rem;"></i>
+            </a>
+          </div>
+        </div>
+      `).join('');
     }
 
-    // Form logic
-    const form = document.getElementById("contact-form");
-    const status = document.getElementById("form-status");
-    const submitBtn = document.getElementById("submit-btn");
+    // Event Listeners
+    searchInput.addEventListener('input', renderCards);
+    sortSelect.addEventListener('change', renderCards);
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      submitBtn.disabled = true;
-      submitBtn.innerText = "전송 중...";
-      try {
-        const response = await fetch(form.action, {
-          method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' }
-        });
-        if (response.ok) {
-          status.innerText = "🚀 문의가 전송되었습니다!";
-          status.className = "success";
-          form.reset();
-        } else { throw new Error(); }
-      } catch {
-        status.innerText = "전송 오류가 발생했습니다.";
-        status.className = "error";
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerText = "문의 보내기";
-        status.style.display = "block";
+    filterTabs.addEventListener('click', (e) => {
+      if (e.target.classList.contains('tab-btn')) {
+        // Toggle Active Class
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+
+        // Set current region & render
+        currentRegion = e.target.getAttribute('data-region');
+        renderCards();
       }
     });
+
+    // Back to top scroll handler
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        backToTopBtn.classList.add('show');
+      } else {
+        backToTopBtn.classList.remove('show');
+      }
+    });
+
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+
+    // Initialize Card Display on Load
+    renderCards();
   </script>
 </body>
 </html>
